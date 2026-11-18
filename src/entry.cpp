@@ -22,27 +22,27 @@ void OnToggleKeybind(const char* aIdentifier, bool aIsRelease);
 
 /* Globals */
 static AddonDefinition_t AddonDef = {};
-static HMODULE           hSelf = nullptr;
-static AddonAPI_t*       APIDefs = nullptr;
-static NexusLinkData_t*  NexusLink = nullptr;
-static FrameStats        Stats;
+static HMODULE hSelf = nullptr;
+static AddonAPI_t* APIDefs = nullptr;
+static NexusLinkData_t* NexusLink = nullptr;
+static FrameStats Stats;
 
-static const char* ADDON_NAME   = "Frametime Overlay";
-static const char* KB_TOGGLE    = "KB_FRAMETIME_OVERLAY_TOGGLE";
+static const char* ADDON_NAME = "Frametime Overlay";
+static const char* KB_TOGGLE = "KB_FRAMETIME_OVERLAY_TOGGLE";
 
 /* Settings */
 struct Settings
 {
-	bool  ShowOverlay      = true;
-	bool  Locked           = false;
-	bool  ShowGraph        = true;
-	bool  ShowDetails      = true;
-	bool  OnlyInGameplay   = true;
-	float BgAlpha          = 0.45f;
-	float GpuThreshold     = 90.0f;
-	float CpuThreshold     = 85.0f;
-	float PosX             = 20.0f;
-	float PosY             = 200.0f;
+	bool ShowOverlay = true;
+	bool Locked = false;
+	bool ShowGraph = true;
+	bool ShowDetails = true;
+	bool OnlyInGameplay = true;
+	float BgAlpha = 0.45f;
+	float GpuThreshold = 90.0f;
+	float CpuThreshold = 85.0f;
+	float PosX = 20.0f;
+	float PosY = 200.0f;
 };
 static Settings g_Cfg;
 
@@ -54,20 +54,20 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
 extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
 {
-	AddonDef.Signature        = (uint32_t)-48219;
-	AddonDef.APIVersion       = NEXUS_API_VERSION;
-	AddonDef.Name             = ADDON_NAME;
-	AddonDef.Version.Major    = 2026;
-	AddonDef.Version.Minor    = 11;
-	AddonDef.Version.Build    = 17;
+	AddonDef.Signature = (uint32_t)-48219;
+	AddonDef.APIVersion = NEXUS_API_VERSION;
+	AddonDef.Name = ADDON_NAME;
+	AddonDef.Version.Major = 2026;
+	AddonDef.Version.Minor = 11;
+	AddonDef.Version.Build = 18;
 	AddonDef.Version.Revision = 0;
-	AddonDef.Author           = "Nekonekoo";
-	AddonDef.Description      = "Shows FPS, frame times, 1% low and whether you're CPU or GPU bound.";
-	AddonDef.Load             = AddonLoad;
-	AddonDef.Unload           = AddonUnload;
-	AddonDef.Flags            = AF_None;
-	AddonDef.Provider         = UP_Raidcore;
-	AddonDef.UpdateLink       = nullptr;
+	AddonDef.Author = "Nekonekoo";
+	AddonDef.Description = "Shows FPS, frame times, 1% low and whether you're CPU or GPU bound.";
+	AddonDef.Load = AddonLoad;
+	AddonDef.Unload = AddonUnload;
+	AddonDef.Flags = AF_None;
+	AddonDef.Provider = UP_GitHub;
+	AddonDef.UpdateLink = "https://github.com/PatrickSantoZZ/GW2FrametimeOverlay";
 	return &AddonDef;
 }
 
@@ -118,16 +118,16 @@ static void LoadSettings()
 	if (!file) return;
 	const std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	ReadBool(json,  "showOverlay",    g_Cfg.ShowOverlay);
-	ReadBool(json,  "locked",         g_Cfg.Locked);
-	ReadBool(json,  "showGraph",      g_Cfg.ShowGraph);
-	ReadBool(json,  "showDetails",    g_Cfg.ShowDetails);
-	ReadBool(json,  "onlyInGameplay", g_Cfg.OnlyInGameplay);
-	ReadFloat(json, "bgAlpha",        g_Cfg.BgAlpha,      0.0f,    1.0f);
-	ReadFloat(json, "gpuThreshold",   g_Cfg.GpuThreshold, 50.0f,   100.0f);
-	ReadFloat(json, "cpuThreshold",   g_Cfg.CpuThreshold, 50.0f,   100.0f);
-	ReadFloat(json, "posX",           g_Cfg.PosX,         -10000.0f, 10000.0f);
-	ReadFloat(json, "posY",           g_Cfg.PosY,         -10000.0f, 10000.0f);
+	ReadBool(json, "showOverlay", g_Cfg.ShowOverlay);
+	ReadBool(json, "locked", g_Cfg.Locked);
+	ReadBool(json, "showGraph", g_Cfg.ShowGraph);
+	ReadBool(json, "showDetails", g_Cfg.ShowDetails);
+	ReadBool(json, "onlyInGameplay", g_Cfg.OnlyInGameplay);
+	ReadFloat(json, "bgAlpha", g_Cfg.BgAlpha, 0.0f, 1.0f);
+	ReadFloat(json, "gpuThreshold", g_Cfg.GpuThreshold, 50.0f, 100.0f);
+	ReadFloat(json, "cpuThreshold", g_Cfg.CpuThreshold, 50.0f, 100.0f);
+	ReadFloat(json, "posX", g_Cfg.PosX, -10000.0f, 10000.0f);
+	ReadFloat(json, "posY", g_Cfg.PosY, -10000.0f, 10000.0f);
 }
 
 static void SaveSettings()
@@ -140,16 +140,16 @@ static void SaveSettings()
 	auto b = [](bool v) { return v ? "true" : "false"; };
 	std::ofstream file(path, std::ios::trunc);
 	file << "{\n"
-	     << "  \"showOverlay\": "    << b(g_Cfg.ShowOverlay)    << ",\n"
-	     << "  \"locked\": "         << b(g_Cfg.Locked)         << ",\n"
-	     << "  \"showGraph\": "      << b(g_Cfg.ShowGraph)      << ",\n"
-	     << "  \"showDetails\": "    << b(g_Cfg.ShowDetails)    << ",\n"
+	     << "  \"showOverlay\": " << b(g_Cfg.ShowOverlay) << ",\n"
+	     << "  \"locked\": " << b(g_Cfg.Locked) << ",\n"
+	     << "  \"showGraph\": " << b(g_Cfg.ShowGraph) << ",\n"
+	     << "  \"showDetails\": " << b(g_Cfg.ShowDetails) << ",\n"
 	     << "  \"onlyInGameplay\": " << b(g_Cfg.OnlyInGameplay) << ",\n"
-	     << "  \"bgAlpha\": "        << g_Cfg.BgAlpha           << ",\n"
-	     << "  \"gpuThreshold\": "   << g_Cfg.GpuThreshold      << ",\n"
-	     << "  \"cpuThreshold\": "   << g_Cfg.CpuThreshold      << ",\n"
-	     << "  \"posX\": "           << g_Cfg.PosX              << ",\n"
-	     << "  \"posY\": "           << g_Cfg.PosY              << "\n"
+	     << "  \"bgAlpha\": " << g_Cfg.BgAlpha << ",\n"
+	     << "  \"gpuThreshold\": " << g_Cfg.GpuThreshold << ",\n"
+	     << "  \"cpuThreshold\": " << g_Cfg.CpuThreshold << ",\n"
+	     << "  \"posX\": " << g_Cfg.PosX << ",\n"
+	     << "  \"posY\": " << g_Cfg.PosY << "\n"
 	     << "}\n";
 }
 
@@ -162,10 +162,10 @@ static BadgeStyle StyleFor(EBottleneck b)
 {
 	switch (b)
 	{
-	case EBottleneck::CPU:   return { "CPU", IM_COL32( 70, 140, 230, 255), "CPU bound: a game thread is maxed out.\nHelps: lower character model limit/quality, reflections, shadows.\nResolution / render sampling won't help much." };
-	case EBottleneck::GPU:   return { "GPU", IM_COL32(220,  70,  70, 255), "GPU bound: the graphics card is maxed out.\nLower: resolution / render sampling, shadows, post-processing, reflections." };
+	case EBottleneck::CPU: return { "CPU", IM_COL32(70, 140, 230, 255), "CPU bound: a game thread is maxed out.\nHelps: lower character model limit/quality, reflections, shadows.\nResolution / render sampling won't help much." };
+	case EBottleneck::GPU: return { "GPU", IM_COL32(220, 70, 70, 255), "GPU bound: the graphics card is maxed out.\nLower: resolution / render sampling, shadows, post-processing, reflections." };
 	case EBottleneck::Limit: return { "LIM", IM_COL32(130, 130, 130, 255), "Limited: neither CPU nor GPU is maxed.\nUsually the FPS cap, V-Sync or the monitor refresh rate." };
-	default:                 return { " ? ", IM_COL32( 90,  90,  90, 255), "Not enough data yet, or GPU counters are unavailable on this system." };
+	default: return { " ? ", IM_COL32(90, 90, 90, 255), "Not enough data yet, or GPU counters are unavailable on this system." };
 	}
 }
 
@@ -225,7 +225,7 @@ void RenderOverlay()
 		{
 			const float gpu = Sampler::GpuUtil();
 			if (gpu >= 0.0f) ImGui::TextDisabled("GPU %3.0f%%  CPU-Thread %3.0f%%", gpu, Sampler::MaxThreadUtil());
-			else             ImGui::TextDisabled("GPU  n/a  CPU-Thread %3.0f%%", Sampler::MaxThreadUtil());
+			else ImGui::TextDisabled("GPU  n/a  CPU-Thread %3.0f%%", Sampler::MaxThreadUtil());
 		}
 
 		// Remember position after the user dragged it around >:c 
